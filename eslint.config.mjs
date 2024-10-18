@@ -37,4 +37,5 @@ export default [
       'simple-import-sort/exports': 'error',
     },
   },
+  { ignores: ['build'] },
 ];
