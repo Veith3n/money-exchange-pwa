@@ -31,7 +31,21 @@ export default [
     rules: {
       'unused-imports/no-unused-imports': 'error',
       'unused-imports/no-unused-vars': ['warn', { vars: 'all', varsIgnorePattern: '^_', args: 'after-used', argsIgnorePattern: '^_' }],
-      'simple-import-sort/imports': 'error',
+      'simple-import-sort/imports': [
+        'error',
+        {
+          groups: [
+            // React imports first
+            ['^react', '^@?\\w'],
+            // Absolute imports and other imports such as Vue-style `@/foo`
+            // Anything that does not start with a dot
+            ['^@/'],
+            // Relative imports
+            // Anything that starts with a dot
+            ['^\\.'],
+          ],
+        },
+      ],
       'simple-import-sort/exports': 'error',
       'prettier/prettier': 'error',
     },
