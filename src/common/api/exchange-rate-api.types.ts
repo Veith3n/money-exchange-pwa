@@ -188,6 +188,16 @@ export enum Currency {
   ZWL = 'ZWL',
 }
 
+export const isCurrency = (key: string): key is Currency => {
+  return Object.values(Currency).includes(key as Currency);
+};
+
+export function convertToCurrencyEnum(str: string): Currency | undefined {
+  const currencyValue = Currency[str as keyof typeof Currency];
+
+  return currencyValue !== undefined ? currencyValue : undefined;
+}
+
 type EightDecimalNumber = number;
 
 type ErrorType = 'unsupported-code' | 'malformed-request' | 'invalid-key' | 'inactive-account' | 'quota-reached' | 'error-code';
