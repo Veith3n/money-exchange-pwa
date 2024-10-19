@@ -17,7 +17,7 @@ const CurrencySelector: React.FC<CurrencySelectorProps> = ({ currencies, selecte
       <Select
         value={selectedCurrency}
         onChange={(e) => {
-          const currency = convertToCurrencyEnum(e.target.value as string);
+          const currency = convertToCurrencyEnum(e.target.value);
           if (currency) {
             onCurrencyChange(currency);
           }
