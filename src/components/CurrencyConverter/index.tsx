@@ -28,7 +28,7 @@ const CurrencyConverter: React.FC = () => {
 
   useEffect(() => {
     const fetchSupportedCurrencies = async () => {
-      await exchangeRateApiService.getExchangeRateForCurrency(Currency.USD).then((response) => {
+      await exchangeRateApiService.getExchangeRateForCurrency(defaultBaseCurrency).then((response) => {
         if (response.result === 'error') {
           console.error('Error fetching currency data:', response['error-type']);
           return;
@@ -40,7 +40,7 @@ const CurrencyConverter: React.FC = () => {
     };
 
     fetchSupportedCurrencies();
-  }, [exchangeRateApiService]);
+  }, [exchangeRateApiService, defaultBaseCurrency]);
 
   const convertCurrency = useCallback(async () => {
     exchangeRateApiService.getExchangeRateForCurrency(baseCurrency).then((response) => {
