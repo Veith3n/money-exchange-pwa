@@ -31,6 +31,7 @@ const CurrencyConverter: React.FC = () => {
       await exchangeRateApiService.getExchangeRateForCurrency(defaultBaseCurrency).then((response) => {
         if (response.result === 'error') {
           console.error('Error fetching currency data:', response['error-type']);
+
           return;
         }
 
@@ -46,6 +47,7 @@ const CurrencyConverter: React.FC = () => {
     exchangeRateApiService.getExchangeRateForCurrency(baseCurrency).then((response) => {
       if (response.result === 'error') {
         console.error('Error fetching currency data:', response['error-type']);
+
         return;
       }
 
