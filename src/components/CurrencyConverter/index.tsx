@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import ExchangeRateApiService from '@common/api/exchange-rate-api.service';
 import { Currency, isCurrency } from '@common/api/exchange-rate-api.types';
-import { Box, Button, TextField, Typography } from '@mui/material';
+import AmountTextField from '@components/AmountTextField';
+import { Box, Button, Typography } from '@mui/material';
 
 import ConversionResult from '../ConversionResult';
 import CurrencySelector from '../CurrencySelector';
@@ -15,7 +16,6 @@ const CurrencyConverter: React.FC = () => {
 
   const [baseCurrency, setBaseCurrency] = useState<Currency>(defaultBaseCurrency);
   const [baseCurrencyAmount, setBaseCurrencyAmount] = useState<number>(1);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [targetCurrency, setTargetCurrency] = useState<Currency>(defaultTargetCurrency);
 
@@ -65,26 +65,7 @@ const CurrencyConverter: React.FC = () => {
         Currency Converter
       </Typography>
       <Box className={`${styles.marginBottom} ${styles.fullWidth} ${styles.maxWidth}`}>
-        <TextField
-          label="Amount"
-          type="number"
-          variant="outlined"
-          fullWidth
-          value={baseCurrencyAmount.toString()}
-          onChange={(e) => {
-            const value = Number(e.target.value);
-
-            if (value <= 9_999_999) {
-              setBaseCurrencyAmount(value);
-              setErrorMessage(null);
-            } else {
-              setErrorMessage('Amount cannot exceed 9,999,999');
-            }
-          }}
-          inputProps={{ min: 0, max: 9_999_999 }}
-          error={!!errorMessage}
-          helperText={errorMessage}
-        />
+        <AmountTextField value={baseCurrencyAmount} onAmountChange={setBaseCurrencyAmount} />
       </Box>
       <Box className={`${styles.marginBottom} ${styles.fullWidth} ${styles.maxWidth}`}>
         <CurrencySelector currencies={currencies} selectedCurrency={baseCurrency} onCurrencyChange={setBaseCurrency} />
