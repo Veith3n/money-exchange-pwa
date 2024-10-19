@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import ExchangeRateApiService from '@common/api/exchange-rate-api.service';
 import { Currency, isCurrency } from '@common/api/exchange-rate-api.types';
+import { Box, Button, TextField, Typography } from '@mui/material';
 
-import ConversionResult from './ConversionResult';
-import CurrencySelector from './CurrencySelector';
+import ConversionResult from '../ConversionResult';
+import CurrencySelector from '../CurrencySelector';
+import styles from './CurrencyConverter.module.scss';
 
 const CurrencyConverter: React.FC = () => {
   const defaultBaseCurrency = Currency.USD;
@@ -43,7 +45,6 @@ const CurrencyConverter: React.FC = () => {
     exchangeRateApiService.getExchangeRateForCurrency(baseCurrency).then((response) => {
       if (response.result === 'error') {
         console.error('Error fetching currency data:', response['error-type']);
-
         return;
       }
 
@@ -58,20 +59,40 @@ const CurrencyConverter: React.FC = () => {
   };
 
   return (
-    <>
-      <h1>Currency Converter</h1>
-      <input type="number" value={baseCurrencyAmount} onChange={(e) => setBaseCurrencyAmount(Number(e.target.value))} />
-      <CurrencySelector currencies={currencies} selectedCurrency={baseCurrency} onCurrencyChange={setBaseCurrency} />
-      <span> to </span>
-      <CurrencySelector currencies={currencies} selectedCurrency={targetCurrency} onCurrencyChange={setTargetCurrency} />
-      <button onClick={convertCurrency}>Convert</button>
+    <Box className={styles.currencyConverter}>
+      <Typography variant="h4" component="h1" gutterBottom>
+        Currency Converter
+      </Typography>
+      <Box className={`${styles.marginBottom} ${styles.fullWidth} ${styles.maxWidth}`}>
+        <TextField
+          label="Amount"
+          type="number"
+          variant="outlined"
+          fullWidth
+          value={baseCurrencyAmount.toString()}
+          onChange={(e) => setBaseCurrencyAmount(Number(e.target.value))}
+          inputProps={{ min: 0, max: 99_999_999 }}
+        />
+      </Box>
+      <Box className={`${styles.marginBottom} ${styles.fullWidth} ${styles.maxWidth}`}>
+        <CurrencySelector currencies={currencies} selectedCurrency={baseCurrency} onCurrencyChange={setBaseCurrency} />
+      </Box>
+      <Typography variant="body1" component="span" gutterBottom>
+        to
+      </Typography>
+      <Box className={`${styles.marginBottom} ${styles.fullWidth} ${styles.maxWidth}`}>
+        <CurrencySelector currencies={currencies} selectedCurrency={targetCurrency} onCurrencyChange={setTargetCurrency} />
+      </Box>
+      <Button variant="contained" color="primary" onClick={convertCurrency}>
+        Convert
+      </Button>
       <ConversionResult
         baseCurrencyAmount={convertedBaseCurrencyAmount}
         baseCurrency={convertedBaseCurrency}
         targetCurrencyAmount={convertedTargetCurrencyAmount}
         targetCurrency={convertedTargetCurrency}
       />
-    </>
+    </Box>
   );
 };
 
