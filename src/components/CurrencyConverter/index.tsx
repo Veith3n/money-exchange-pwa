@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import ExchangeRateApiService from '@common/api/exchange-rate-api.service';
 import { Currency, isCurrency } from '@common/api/exchange-rate-api.types';
 import AmountTextField from '@components/AmountTextField';
@@ -42,7 +42,7 @@ const CurrencyConverter: React.FC = () => {
     fetchSupportedCurrencies();
   }, [exchangeRateApiService]);
 
-  const convertCurrency = () => {
+  const convertCurrency = useCallback(async () => {
     exchangeRateApiService.getExchangeRateForCurrency(baseCurrency).then((response) => {
       if (response.result === 'error') {
         console.error('Error fetching currency data:', response['error-type']);
@@ -57,7 +57,7 @@ const CurrencyConverter: React.FC = () => {
       setConvertedTargetCurrency(targetCurrency);
       setConvertedTargetCurrencyAmount(baseCurrencyAmount * rate);
     });
-  };
+  }, [baseCurrency, baseCurrencyAmount, targetCurrency, exchangeRateApiService]);
 
   return (
     <Box className={styles.currencyConverter}>
