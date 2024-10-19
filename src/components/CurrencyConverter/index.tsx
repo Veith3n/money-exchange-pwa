@@ -15,6 +15,7 @@ const CurrencyConverter: React.FC = () => {
 
   const [baseCurrency, setBaseCurrency] = useState<Currency>(defaultBaseCurrency);
   const [baseCurrencyAmount, setBaseCurrencyAmount] = useState<number>(1);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [targetCurrency, setTargetCurrency] = useState<Currency>(defaultTargetCurrency);
 
@@ -70,8 +71,19 @@ const CurrencyConverter: React.FC = () => {
           variant="outlined"
           fullWidth
           value={baseCurrencyAmount.toString()}
-          onChange={(e) => setBaseCurrencyAmount(Number(e.target.value))}
-          inputProps={{ min: 0, max: 99_999_999 }}
+          onChange={(e) => {
+            const value = Number(e.target.value);
+
+            if (value <= 9_999_999) {
+              setBaseCurrencyAmount(value);
+              setErrorMessage(null);
+            } else {
+              setErrorMessage('Amount cannot exceed 9,999,999');
+            }
+          }}
+          inputProps={{ min: 0, max: 9_999_999 }}
+          error={!!errorMessage}
+          helperText={errorMessage}
         />
       </Box>
       <Box className={`${styles.marginBottom} ${styles.fullWidth} ${styles.maxWidth}`}>
