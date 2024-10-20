@@ -3,17 +3,22 @@
   "name": "Currency converter app",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "currency_exchange.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "currency_exchange.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
+      "src": "logo_256.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "256x256"
     },
     {
-      "src": "logo512.png",
+      "src": "logo_512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
