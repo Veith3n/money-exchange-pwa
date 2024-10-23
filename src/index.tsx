@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
 import CurrencyConverter from '@components/CurrencyConverter';
 import HistoryScreen from '@components/HistoryScreen';
+import Settings from '@components/Settings';
 import { HistoryProvider } from '@context/HistoryContext';
 import { CustomThemeProvider } from '@context/ThemeContext';
 
@@ -16,6 +17,7 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 export enum ROUTES {
   CurrencyConverterView = '/',
   ConversionHistoryView = '/history',
+  SettingsView = '/settings',
 }
 const App = () => {
   return (
@@ -25,6 +27,7 @@ const App = () => {
 
         <Route path={ROUTES.CurrencyConverterView} element={<CurrencyConverter />} />
         <Route path={ROUTES.ConversionHistoryView} element={<HistoryScreen />} />
+        <Route path={ROUTES.SettingsView} element={<Settings />} />
       </Routes>
     </HistoryProvider>
   );

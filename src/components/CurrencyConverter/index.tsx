@@ -107,6 +107,7 @@ const CurrencyConverter: React.FC = () => {
         targetCurrency={convertedTargetCurrency}
       />
       <NavigationButton destination={ROUTES.ConversionHistoryView} sx={{ marginTop: 2 }} textToDisplay="Conversion History" />
+      <NavigationButton destination={ROUTES.SettingsView} sx={{ marginTop: 2 }} textToDisplay="Settings" />
     </Box>
   );
 };
