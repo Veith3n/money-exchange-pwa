@@ -10,12 +10,15 @@ import './index.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
+export enum ROUTES {
+  CurrencyConverterView = '/',
+}
 const App = () => {
   return (
     <Routes>
-      <Route path="*" element={<Navigate to="/" />} />
+      <Route path="*" element={<Navigate to={ROUTES.CurrencyConverterView} />} />
 
-      <Route path="/" element={<CurrencyConverter />} />
+      <Route path={ROUTES.CurrencyConverterView} element={<CurrencyConverter />} />
     </Routes>
   );
 };
