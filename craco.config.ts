@@ -6,6 +6,7 @@ const config: CracoConfig = {
     alias: {
       '@common': path.resolve(__dirname, 'src/common'),
       '@components': path.resolve(__dirname, 'src/components'),
+      '@context': path.resolve(__dirname, 'src/context'),
     },
   },
 };
