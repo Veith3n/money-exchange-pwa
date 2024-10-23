@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
 import CurrencyConverter from '@components/CurrencyConverter';
 
 import reportWebVitals from './reportWebVitals';
@@ -8,9 +9,22 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import './index.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+
+const App = () => {
+  return (
+    <Routes>
+      <Route path="*" element={<Navigate to="/" />} />
+
+      <Route path="/" element={<CurrencyConverter />} />
+    </Routes>
+  );
+};
+
 root.render(
   <React.StrictMode>
-    <CurrencyConverter />
+    <Router>
+      <App />
+    </Router>
   </React.StrictMode>,
 );
 
