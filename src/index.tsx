@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
 import CurrencyConverter from '@components/CurrencyConverter';
+import { HistoryProvider } from '@context/HistoryContext';
 
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
@@ -15,11 +16,13 @@ export enum ROUTES {
 }
 const App = () => {
   return (
-    <Routes>
-      <Route path="*" element={<Navigate to={ROUTES.CurrencyConverterView} />} />
+    <HistoryProvider>
+      <Routes>
+        <Route path="*" element={<Navigate to={ROUTES.CurrencyConverterView} />} />
 
-      <Route path={ROUTES.CurrencyConverterView} element={<CurrencyConverter />} />
-    </Routes>
+        <Route path={ROUTES.CurrencyConverterView} element={<CurrencyConverter />} />
+      </Routes>
+    </HistoryProvider>
   );
 };
 
