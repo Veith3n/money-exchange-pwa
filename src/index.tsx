@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-d
 import CurrencyConverter from '@components/CurrencyConverter';
 import HistoryScreen from '@components/HistoryScreen';
 import { HistoryProvider } from '@context/HistoryContext';
+import { CustomThemeProvider } from '@context/ThemeContext';
 
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
@@ -31,9 +32,11 @@ const App = () => {
 
 root.render(
   <React.StrictMode>
-    <Router>
-      <App />
-    </Router>
+    <CustomThemeProvider>
+      <Router>
+        <App />
+      </Router>
+    </CustomThemeProvider>
   </React.StrictMode>,
 );
 
