@@ -1,6 +1,6 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Box, Button, List, ListItem, ListItemText, Paper, Typography } from '@mui/material';
+import NavigationButton from '@components/buttons/NavigationButton';
+import { Box, List, ListItem, ListItemText, Paper, Typography } from '@mui/material';
 import { ROUTES } from 'src';
 import { useHistoryContext } from 'src/context/HistoryContext';
 
@@ -23,7 +23,7 @@ const styles = {
     borderBottom: '1px solid #ddd',
     padding: '8px 16px',
   },
-  button: {
+  navigationButton: {
     display: 'block',
     margin: 'auto',
     marginBottom: 2,
@@ -37,16 +37,12 @@ const styles = {
 const HistoryScreen: React.FC = () => {
   const { history } = useHistoryContext();
 
-  const navigate = useNavigate();
-
   return (
     <Box sx={styles.container}>
       <Typography variant="h4" component="h1" gutterBottom sx={styles.heading}>
         Conversion History
       </Typography>
-      <Button variant="outlined" color="secondary" onClick={() => navigate(ROUTES.CurrencyConverterView)} sx={styles.button}>
-        Converter
-      </Button>
+      <NavigationButton sx={styles.navigationButton} destination={ROUTES.CurrencyConverterView} textToDisplay="Converter" />
 
       <Paper elevation={3} sx={styles.paper}>
         {history.length === 0 ? (

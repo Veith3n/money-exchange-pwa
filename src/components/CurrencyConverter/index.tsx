@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import ExchangeRateApiService from '@common/api/exchange-rate-api.service';
 import { Currency, isCurrency } from '@common/api/exchange-rate-api.types';
 import AmountTextField from '@components/AmountTextField';
+import NavigationButton from '@components/buttons/NavigationButton';
 import { useHistoryContext } from '@context/HistoryContext';
 import { Box, Button, Typography } from '@mui/material';
 import { ROUTES } from 'src';
@@ -16,7 +16,6 @@ const CurrencyConverter: React.FC = () => {
   const defaultTargetCurrency = Currency.EUR;
 
   const { setHistory } = useHistoryContext();
-  const navigate = useNavigate();
 
   const [currencies, setCurrencies] = useState<Currency[]>([]);
 
@@ -107,9 +106,7 @@ const CurrencyConverter: React.FC = () => {
         targetCurrencyAmount={convertedTargetCurrencyAmount}
         targetCurrency={convertedTargetCurrency}
       />
-      <Button variant="outlined" color="secondary" sx={{ marginTop: 2 }} onClick={() => navigate(ROUTES.ConversionHistoryView)}>
-        Conversion History
-      </Button>
+      <NavigationButton destination={ROUTES.ConversionHistoryView} sx={{ marginTop: 2 }} textToDisplay="Conversion History" />
     </Box>
   );
 };
