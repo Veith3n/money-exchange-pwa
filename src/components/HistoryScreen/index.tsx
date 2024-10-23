@@ -28,6 +28,10 @@ const styles = {
     margin: 'auto',
     marginBottom: 2,
   },
+  noEntries: {
+    textAlign: 'center',
+    padding: 2,
+  },
 };
 
 const HistoryScreen: React.FC = () => {
@@ -45,16 +49,22 @@ const HistoryScreen: React.FC = () => {
       </Button>
 
       <Paper elevation={3} sx={styles.paper}>
-        <List>
-          {history.map((entry, index) => (
-            <ListItem key={index} sx={styles.listItem}>
-              <ListItemText
-                primary={`${entry.baseAmount.toFixed(2)} ${entry.baseCurrency} = ${entry.targetAmount.toFixed(2)} ${entry.targetCurrency}`}
-                secondary={entry.date}
-              />
-            </ListItem>
-          ))}
-        </List>
+        {history.length === 0 ? (
+          <Typography variant="body1" sx={styles.noEntries}>
+            No conversion history available.
+          </Typography>
+        ) : (
+          <List>
+            {history.map((entry, index) => (
+              <ListItem key={index} sx={styles.listItem}>
+                <ListItemText
+                  primary={`${entry.baseAmount.toFixed(2)} ${entry.baseCurrency} = ${entry.targetAmount.toFixed(2)} ${entry.targetCurrency}`}
+                  secondary={entry.date}
+                />
+              </ListItem>
+            ))}
+          </List>
+        )}
       </Paper>
     </Box>
   );
