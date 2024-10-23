@@ -2,7 +2,7 @@ import React from 'react';
 import NavigationButton from '@components/buttons/NavigationButton';
 import { Box, List, ListItem, ListItemText, Paper, Typography } from '@mui/material';
 import { ROUTES } from 'src';
-import { useHistoryContext } from 'src/context/HistoryContext';
+import { HistoryEntry, useHistoryContext } from 'src/context/HistoryContext';
 
 const styles = {
   container: {
@@ -34,6 +34,38 @@ const styles = {
   },
 };
 
+interface HistoryListProps {
+  history: HistoryEntry[];
+  styles: object;
+}
+
+const HistoryList: React.FC<HistoryListProps> = ({ history, styles }) => {
+  return (
+    <List>
+      {history.map((entry, index) => (
+        <ListItem key={index} sx={styles}>
+          <ListItemText
+            primary={`${entry.baseAmount.toFixed(2)} ${entry.baseCurrency} = ${entry.targetAmount.toFixed(2)} ${entry.targetCurrency}`}
+            secondary={entry.date}
+          />
+        </ListItem>
+      ))}
+    </List>
+  );
+};
+
+interface NoEntriesMessageProps {
+  styles: object;
+}
+
+const NoEntriesMessage: React.FC<NoEntriesMessageProps> = ({ styles }) => {
+  return (
+    <Typography variant="body1" sx={styles}>
+      No conversion history available.
+    </Typography>
+  );
+};
+
 const HistoryScreen: React.FC = () => {
   const { history } = useHistoryContext();
 
@@ -45,22 +77,7 @@ const HistoryScreen: React.FC = () => {
       <NavigationButton sx={styles.navigationButton} destination={ROUTES.CurrencyConverterView} textToDisplay="Converter" />
 
       <Paper elevation={3} sx={styles.paper}>
-        {history.length === 0 ? (
-          <Typography variant="body1" sx={styles.noEntries}>
-            No conversion history available.
-          </Typography>
-        ) : (
-          <List>
-            {history.map((entry, index) => (
-              <ListItem key={index} sx={styles.listItem}>
-                <ListItemText
-                  primary={`${entry.baseAmount.toFixed(2)} ${entry.baseCurrency} = ${entry.targetAmount.toFixed(2)} ${entry.targetCurrency}`}
-                  secondary={entry.date}
-                />
-              </ListItem>
-            ))}
-          </List>
-        )}
+        {history.length === 0 ? <NoEntriesMessage styles={styles.noEntries} /> : <HistoryList history={history} styles={styles.listItem} />}
       </Paper>
     </Box>
   );
