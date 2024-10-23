@@ -1,8 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ExchangeRateApiService from '@common/api/exchange-rate-api.service';
 import { Currency, isCurrency } from '@common/api/exchange-rate-api.types';
 import AmountTextField from '@components/AmountTextField';
+import { useHistoryContext } from '@context/HistoryContext';
 import { Box, Button, Typography } from '@mui/material';
+import { ROUTES } from 'src';
 
 import ConversionResult from '../ConversionResult';
 import CurrencySelector from '../CurrencySelector';
@@ -11,6 +14,9 @@ import styles from './CurrencyConverter.module.scss';
 const CurrencyConverter: React.FC = () => {
   const defaultBaseCurrency = Currency.USD;
   const defaultTargetCurrency = Currency.EUR;
+
+  const { setHistory } = useHistoryContext();
+  const navigate = useNavigate();
 
   const [currencies, setCurrencies] = useState<Currency[]>([]);
 
@@ -58,6 +64,20 @@ const CurrencyConverter: React.FC = () => {
 
       setConvertedTargetCurrency(targetCurrency);
       setConvertedTargetCurrencyAmount(baseCurrencyAmount * rate);
+
+      const addHistoryEntry = () => {
+        const historyEntry = {
+          baseCurrency,
+          targetCurrency,
+          baseAmount: baseCurrencyAmount,
+          targetAmount: baseCurrencyAmount * rate,
+          date: new Date().toLocaleString(),
+        };
+
+        setHistory((prevHistory) => [...prevHistory, historyEntry]);
+      };
+
+      addHistoryEntry();
     });
   }, [baseCurrency, baseCurrencyAmount, targetCurrency, exchangeRateApiService]);
 
@@ -87,6 +107,9 @@ const CurrencyConverter: React.FC = () => {
         targetCurrencyAmount={convertedTargetCurrencyAmount}
         targetCurrency={convertedTargetCurrency}
       />
+      <Button variant="outlined" color="secondary" sx={{ marginTop: 2 }} onClick={() => navigate(ROUTES.ConversionHistoryView)}>
+        Conversion History
+      </Button>
     </Box>
   );
 };
