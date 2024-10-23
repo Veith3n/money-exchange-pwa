@@ -78,7 +78,7 @@ const CurrencyConverter: React.FC = () => {
 
       addHistoryEntry();
     });
-  }, [baseCurrency, baseCurrencyAmount, targetCurrency, exchangeRateApiService]);
+  }, [baseCurrency, baseCurrencyAmount, targetCurrency, exchangeRateApiService, setHistory]);
 
   return (
     <Box className={styles.currencyConverter}>
