@@ -18,7 +18,8 @@
     "baseUrl": ".",
     "paths": {
       "@common/*": ["src/common/*"],
-      "@components/*": ["src/components/*"]
+      "@components/*": ["src/components/*"],
+      "@context/*": ["src/context/*"]
     }
   },
   "include": ["src", "craco.config.ts"]
