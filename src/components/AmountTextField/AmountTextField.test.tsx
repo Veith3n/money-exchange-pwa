@@ -11,6 +11,7 @@ describe('AmountTextField', () => {
 
   const setAmountOnTheElement = (value: string) => fireEvent.change(inputElement, { target: { value } });
   const getErrorMessageForExceedingAmount = () => screen.queryByText(/amount cannot exceed/i);
+  const getErrorMessageForDecimalPlaces = () => screen.queryByText(/only up to two decimal places are allowed/i);
 
   let inputElement: HTMLInputElement;
 
@@ -48,5 +49,23 @@ describe('AmountTextField', () => {
 
     expect(getErrorMessageForExceedingAmount()).not.toBeInTheDocument();
     expect(mockOnAmountChange).toHaveBeenCalledWith(200);
+  });
+
+  it('shows an error message when input has more than two decimal places', () => {
+    setAmountOnTheElement('100.123');
+
+    expect(getErrorMessageForDecimalPlaces()).toBeInTheDocument();
+    expect(mockOnAmountChange).not.toHaveBeenCalled();
+  });
+
+  it('clears the error message when valid input with up to two decimal places is provided', () => {
+    setAmountOnTheElement('100.123');
+
+    expect(getErrorMessageForDecimalPlaces()).toBeInTheDocument();
+
+    setAmountOnTheElement('100.12');
+
+    expect(getErrorMessageForDecimalPlaces()).not.toBeInTheDocument();
+    expect(mockOnAmountChange).toHaveBeenCalledWith(100.12);
   });
 });

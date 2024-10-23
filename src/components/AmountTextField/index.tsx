@@ -18,8 +18,14 @@ const AmountTextField: React.FC<AmountTextFieldProps> = ({ value, onAmountChange
         const numericValue = Number(inputValue);
 
         if (numericValue <= maxSupportedAmount) {
-          onAmountChange(numericValue);
-          setErrorMessage(null);
+          const decimalPointsCount = inputValue.split('.')[1];
+
+          if (decimalPointsCount === undefined || decimalPointsCount.length <= 2) {
+            onAmountChange(numericValue);
+            setErrorMessage(null);
+          } else {
+            setErrorMessage('Only up to two decimal places are allowed.');
+          }
         } else {
           setErrorMessage(`Amount cannot exceed ${maxSupportedAmount}`);
         }
