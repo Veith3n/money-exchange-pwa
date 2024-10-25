@@ -4,7 +4,7 @@ import { Currency, CurrencyGetExchangeRatesResponse, ExchangeRateApi } from './e
 
 class ExchangeRateApiService implements ExchangeRateApi {
   private static instance: ExchangeRateApiService;
-  private readonly exchangeRateApiBaseUrl = 'https://v6.exchangerate-api.com/v6';
+  static readonly BASE_URL = 'https://v6.exchangerate-api.com/v6';
 
   // Private constructor to prevent direct instantiation
   private constructor() {}
@@ -19,7 +19,7 @@ class ExchangeRateApiService implements ExchangeRateApi {
 
   public getExchangeRateForCurrency(baseCurrency: Currency): Promise<CurrencyGetExchangeRatesResponse> {
     return axios
-      .get<CurrencyGetExchangeRatesResponse>(`${this.exchangeRateApiBaseUrl}/latest/${baseCurrency}`, { headers: this.authHeader() })
+      .get<CurrencyGetExchangeRatesResponse>(`${this.baseUrl()}/latest/${baseCurrency}`, { headers: this.authHeader() })
       .then((response) => response.data)
       .catch((error) => error.data);
   }
@@ -39,6 +39,10 @@ class ExchangeRateApiService implements ExchangeRateApi {
     }
 
     return token;
+  }
+
+  private baseUrl(): string {
+    return ExchangeRateApiService.BASE_URL;
   }
 }
 
