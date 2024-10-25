@@ -2,6 +2,7 @@ import React from 'react';
 import { useNetworkState } from 'react-use';
 import { Currency } from '@common/api/exchange-rate-api.types';
 import CurrencySelector from '@components/CurrencySelector';
+import { Tooltip } from '@mui/material';
 
 interface CurrencySelectorProps {
   selectedCurrency: Currency;
@@ -24,8 +25,17 @@ const CurrencySelectorWithOfflineSupport: React.FC<CurrencySelectorProps> = ({
 
   const offlineCurrency = offlineCurrencies.includes(selectedCurrency) ? selectedCurrency : offlineCurrencies[0];
 
-  onCurrencyChange(offlineCurrency);
-  return <CurrencySelector currencies={offlineCurrencies} selectedCurrency={offlineCurrency} onCurrencyChange={onCurrencyChange} />;
+  if (offlineCurrency) {
+    onCurrencyChange(offlineCurrency);
+  }
+
+  return (
+    <Tooltip title="In offline mode, only supported currencies are shown." arrow placement="right">
+      <div>
+        <CurrencySelector currencies={offlineCurrencies} selectedCurrency={offlineCurrency} onCurrencyChange={onCurrencyChange} />
+      </div>
+    </Tooltip>
+  );
 };
 
 export default CurrencySelectorWithOfflineSupport;
