@@ -1,6 +1,8 @@
 import React from 'react';
 import { useGeolocated } from 'react-geolocated';
+import NavigationButton from '@components/buttons/NavigationButton';
 import { Box, CircularProgress, Table, TableBody, TableCell, TableRow, Typography } from '@mui/material';
+import { ROUTES } from 'src';
 
 const styles = {
   container: {
@@ -19,6 +21,11 @@ const styles = {
   loadingText: {
     marginLeft: 2,
   },
+  navigationButton: {
+    display: 'block',
+    margin: 'auto',
+    marginBottom: 2,
+  },
 };
 
 const Geolocation: React.FC = () => {
@@ -34,6 +41,7 @@ const Geolocation: React.FC = () => {
       <Typography variant="h4" component="h1" gutterBottom>
         Geolocation Example
       </Typography>
+      <NavigationButton sx={styles.navigationButton} destination={ROUTES.CurrencyConverterView} textToDisplay="Converter" />
       {!isGeolocationAvailable ? (
         <GeolocationError message="Your browser does not support Geolocation" />
       ) : !isGeolocationEnabled ? (
