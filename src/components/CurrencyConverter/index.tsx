@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import ExchangeRateApiService from '@common/api/exchange-rate-api.service';
 import { Currency, isCurrency } from '@common/api/exchange-rate-api.types';
+import { ConversionNotification } from '@common/notifications';
 import AmountTextField from '@components/AmountTextField';
 import NavigationButton from '@components/buttons/NavigationButton';
 import CurrencySelectorWithOfflineSupport from '@components/CurrencySelectorWithOfflineSupport';
 import { useHistoryContext } from '@context/HistoryContext';
 import { Box, Button, Typography } from '@mui/material';
 import { ROUTES } from 'src';
-import { ConversionNotification } from 'src/service-worker';
 
 import ConversionResult from '../ConversionResult';
 import CurrencySelector from '../CurrencySelector';

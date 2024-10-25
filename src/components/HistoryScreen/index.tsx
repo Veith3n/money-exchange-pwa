@@ -1,10 +1,10 @@
 import React from 'react';
 import { Currency } from '@common/api/exchange-rate-api.types';
+import { ExchangeRateNotification } from '@common/notifications';
 import NavigationButton from '@components/buttons/NavigationButton';
 import { Box, Button, List, ListItem, ListItemText, Paper, Typography } from '@mui/material';
 import { ROUTES } from 'src';
 import { HistoryEntry, useHistoryContext } from 'src/context/HistoryContext';
-import { ExchangeRateNotification } from 'src/service-worker';
 
 const styles = {
   container: {
