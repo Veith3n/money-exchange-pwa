@@ -129,6 +129,7 @@ const CurrencyConverter: React.FC = () => {
       />
       <NavigationButton destination={ROUTES.ConversionHistoryView} sx={{ marginTop: 2 }} textToDisplay="Conversion History" />
       <NavigationButton destination={ROUTES.SettingsView} sx={{ marginTop: 2 }} textToDisplay="Settings" />
+      <NavigationButton destination={ROUTES.GeolocationView} sx={{ marginTop: 2 }} textToDisplay="Your cords data" />
     </Box>
   );
 };
