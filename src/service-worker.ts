@@ -102,3 +102,22 @@ registerRoute(
     plugins: [new ExpirationPlugin({ maxEntries: 70, maxAgeSeconds: twoDaysInSeconds })],
   }),
 );
+
+// Delete old caches during the activate event
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches
+      .keys()
+      .then((cacheNames) => {
+        return cacheNames.filter((cacheName) => !currentCaches.includes(cacheName));
+      })
+      .then((cachesToDelete) => {
+        return Promise.all(
+          cachesToDelete.map((cacheToDelete) => {
+            return caches.delete(cacheToDelete);
+          }),
+        );
+      })
+      .then(() => self.clients.claim()),
+  );
+});
