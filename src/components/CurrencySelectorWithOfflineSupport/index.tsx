@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNetworkState } from 'react-use';
 import { Currency } from '@common/api/exchange-rate-api.types';
 import CurrencySelector from '@components/CurrencySelector';
-import { Tooltip } from '@mui/material';
+import { Alert, Snackbar } from '@mui/material';
 
 interface CurrencySelectorProps {
   selectedCurrency: Currency;
@@ -18,6 +18,17 @@ const CurrencySelectorWithOfflineSupport: React.FC<CurrencySelectorProps> = ({
   offlineCurrencies,
 }) => {
   const { online } = useNetworkState();
+  const [showSnackbar, setShowSnackbar] = useState(false);
+
+  useEffect(() => {
+    if (!online) {
+      setShowSnackbar(true);
+    }
+  }, [online]);
+
+  const handleCloseSnackbar = () => {
+    setShowSnackbar(false);
+  };
 
   if (online) {
     return <CurrencySelector currencies={onlineCurrencies} selectedCurrency={selectedCurrency} onCurrencyChange={onCurrencyChange} />;
@@ -30,11 +41,14 @@ const CurrencySelectorWithOfflineSupport: React.FC<CurrencySelectorProps> = ({
   }
 
   return (
-    <Tooltip title="In offline mode, only supported currencies are shown." arrow placement="right">
-      <div>
-        <CurrencySelector currencies={offlineCurrencies} selectedCurrency={offlineCurrency} onCurrencyChange={onCurrencyChange} />
-      </div>
-    </Tooltip>
+    <>
+      <CurrencySelector currencies={offlineCurrencies} selectedCurrency={offlineCurrency} onCurrencyChange={onCurrencyChange} />
+      <Snackbar open={showSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar} anchorOrigin={{ vertical: 'top', horizontal: 'left' }}>
+        <Alert onClose={handleCloseSnackbar} severity="info" sx={{ width: '100%' }}>
+          In offline mode, only supported currencies are shown.
+        </Alert>
+      </Snackbar>
+    </>
   );
 };
 
