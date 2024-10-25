@@ -24,6 +24,12 @@ const styles = {
   listItem: {
     borderBottom: '1px solid #ddd',
     padding: '8px 16px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  notifyButton: {
+    marginLeft: 'auto',
   },
   navigationButton: {
     display: 'block',
@@ -38,7 +44,7 @@ const styles = {
 
 interface HistoryListProps {
   history: HistoryEntry[];
-  styles: object;
+  styles: typeof styles;
 }
 
 const HistoryList: React.FC<HistoryListProps> = ({ history, styles }) => {
@@ -60,29 +66,27 @@ const HistoryList: React.FC<HistoryListProps> = ({ history, styles }) => {
   return (
     <List>
       {history.map((entry, index) => (
-        <>
-          <ListItem key={index} sx={styles}>
-            <ListItemText
-              primary={`${entry.baseAmount.toFixed(2)} ${entry.baseCurrency} = ${entry.targetAmount.toFixed(2)} ${entry.targetCurrency}`}
-              secondary={entry.date}
-            />
-          </ListItem>
-          <Button variant="contained" color="primary" onClick={() => handleNotify(entry.baseCurrency, entry.targetCurrency)}>
-            Notify after some time about rate
+        <ListItem key={index} sx={styles.listItem}>
+          <ListItemText
+            primary={`${entry.baseAmount.toFixed(2)} ${entry.baseCurrency} = ${entry.targetAmount.toFixed(2)} ${entry.targetCurrency}`}
+            secondary={entry.date}
+          />
+          <Button variant="contained" color="primary" onClick={() => handleNotify(entry.baseCurrency, entry.targetCurrency)} sx={styles.notifyButton}>
+            Notify
           </Button>
-        </>
+        </ListItem>
       ))}
     </List>
   );
 };
 
 interface NoEntriesMessageProps {
-  styles: object;
+  styles: typeof styles;
 }
 
 const NoEntriesMessage: React.FC<NoEntriesMessageProps> = ({ styles }) => {
   return (
-    <Typography variant="body1" sx={styles}>
+    <Typography variant="body1" sx={styles.noEntries}>
       No conversion history available.
     </Typography>
   );
@@ -99,7 +103,7 @@ const HistoryScreen: React.FC = () => {
       <NavigationButton sx={styles.navigationButton} destination={ROUTES.CurrencyConverterView} textToDisplay="Converter" />
 
       <Paper elevation={3} sx={styles.paper}>
-        {history.length === 0 ? <NoEntriesMessage styles={styles.noEntries} /> : <HistoryList history={history} styles={styles.listItem} />}
+        {history.length === 0 ? <NoEntriesMessage styles={styles} /> : <HistoryList history={history} styles={styles} />}
       </Paper>
     </Box>
   );
