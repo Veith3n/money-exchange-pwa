@@ -1,8 +1,10 @@
 import React from 'react';
+import { Currency } from '@common/api/exchange-rate-api.types';
 import NavigationButton from '@components/buttons/NavigationButton';
-import { Box, List, ListItem, ListItemText, Paper, Typography } from '@mui/material';
+import { Box, Button, List, ListItem, ListItemText, Paper, Typography } from '@mui/material';
 import { ROUTES } from 'src';
 import { HistoryEntry, useHistoryContext } from 'src/context/HistoryContext';
+import { ExchangeRateNotification } from 'src/service-worker';
 
 const styles = {
   container: {
@@ -40,15 +42,35 @@ interface HistoryListProps {
 }
 
 const HistoryList: React.FC<HistoryListProps> = ({ history, styles }) => {
+  const handleNotify = (baseCurrency: Currency, targetCurrency: Currency) => {
+    if (navigator.serviceWorker.controller) {
+      console.log('Sending message to service worker:', { baseCurrency, targetCurrency });
+
+      const notification: ExchangeRateNotification = new ExchangeRateNotification({ baseCurrency, targetCurrency });
+
+      navigator.serviceWorker.controller.postMessage({
+        type: notification.type,
+        data: notification.data,
+      });
+    } else {
+      console.error('Service worker controller not found.');
+    }
+  };
+
   return (
     <List>
       {history.map((entry, index) => (
-        <ListItem key={index} sx={styles}>
-          <ListItemText
-            primary={`${entry.baseAmount.toFixed(2)} ${entry.baseCurrency} = ${entry.targetAmount.toFixed(2)} ${entry.targetCurrency}`}
-            secondary={entry.date}
-          />
-        </ListItem>
+        <>
+          <ListItem key={index} sx={styles}>
+            <ListItemText
+              primary={`${entry.baseAmount.toFixed(2)} ${entry.baseCurrency} = ${entry.targetAmount.toFixed(2)} ${entry.targetCurrency}`}
+              secondary={entry.date}
+            />
+          </ListItem>
+          <Button variant="contained" color="primary" onClick={() => handleNotify(entry.baseCurrency, entry.targetCurrency)}>
+            Notify after some time about rate
+          </Button>
+        </>
       ))}
     </List>
   );
