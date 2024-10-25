@@ -9,6 +9,8 @@
 // service worker, and the Workbox build step will be skipped.
 
 import ExchangeRateApiService from '@common/api/exchange-rate-api.service';
+import { Currency } from '@common/api/exchange-rate-api.types';
+import { ConversionNotification, ExchangeRateNotification } from '@common/notifications';
 import { clientsClaim, setCacheNameDetails } from 'workbox-core';
 import { ExpirationPlugin } from 'workbox-expiration';
 import { createHandlerBoundToURL, precacheAndRoute } from 'workbox-precaching';
@@ -89,8 +91,55 @@ registerRoute(
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
+  } else if (event.data && event.data.type === ExchangeRateNotification['type']) {
+    const { baseCurrency, targetCurrency } = event.data.data as ExchangeRateNotification['data'];
+
+    setTimeout(() => {
+      fetchExchangeRateAndNotify(baseCurrency, targetCurrency);
+    }, 600);
+  }
+
+  if (event.data && event.data.type === ConversionNotification['type']) {
+    console.log('Received message from CurrencyConverter:', event.data.data);
+    const { baseCurrency, targetCurrency, baseCurrencyAmount, targetCurrencyAmount } = event.data.data as ConversionNotification['data'];
+
+    showConversionNotification(baseCurrency, targetCurrency, baseCurrencyAmount, targetCurrencyAmount);
   }
 });
+
+function showConversionNotification(baseCurrency: string, targetCurrency: string, baseAmount: number, targetAmount: number) {
+  console.log('Showing conversion notification:', { baseCurrency, targetCurrency, baseAmount, targetAmount });
+
+  showNotification('Currency Conversion', `${baseAmount} ${baseCurrency} = ${targetAmount} ${targetCurrency}`, 'currency-conversion');
+}
+
+function showNotification(title: string, body: string, tag: string) {
+  self.registration.showNotification(title, {
+    body,
+    icon: '/icon.png',
+    tag,
+  });
+}
+
+async function fetchExchangeRateAndNotify(baseCurrency: Currency, targetCurrency: Currency) {
+  try {
+    const exchangeRateApiService = ExchangeRateApiService.getInstance();
+    const response = await exchangeRateApiService.getExchangeRateForCurrency(baseCurrency);
+
+    if (response.result === 'error') {
+      showNotification('Exchange Rate Notification', `The exchange rate from ${baseCurrency} to ${targetCurrency} is unknown.`, 'exchange-rate');
+
+      console.error('Error fetching currency data:', response['error-type']);
+
+      return;
+    }
+    const rate = response.conversion_rates[targetCurrency];
+
+    showNotification('Exchange Rate Notification', `The exchange rate from ${baseCurrency} to ${targetCurrency} is ${rate}.`, 'exchange-rate');
+  } catch (error) {
+    console.error('Error fetching exchange rate:', error);
+  }
+}
 
 // Any other custom service worker logic can go here.
 
@@ -102,6 +151,11 @@ registerRoute(
     plugins: [new ExpirationPlugin({ maxEntries: 70, maxAgeSeconds: twoDaysInSeconds })],
   }),
 );
+
+// Immediately activate the new service worker
+self.addEventListener('install', function () {
+  self.skipWaiting();
+});
 
 // Delete old caches during the activate event
 self.addEventListener('activate', (event) => {

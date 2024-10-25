@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import ExchangeRateApiService from '@common/api/exchange-rate-api.service';
 import { Currency, isCurrency } from '@common/api/exchange-rate-api.types';
+import { ConversionNotification } from '@common/notifications';
 import AmountTextField from '@components/AmountTextField';
 import NavigationButton from '@components/buttons/NavigationButton';
 import CurrencySelectorWithOfflineSupport from '@components/CurrencySelectorWithOfflineSupport';
@@ -67,19 +68,20 @@ const CurrencyConverter: React.FC = () => {
       }
 
       const rate = response.conversion_rates[targetCurrency];
+      const targetCurrencyAmount = baseCurrencyAmount * rate;
 
       setConvertedBaseCurrency(baseCurrency);
       setConvertedBaseCurrencyAmount(baseCurrencyAmount);
 
       setConvertedTargetCurrency(targetCurrency);
-      setConvertedTargetCurrencyAmount(baseCurrencyAmount * rate);
+      setConvertedTargetCurrencyAmount(targetCurrencyAmount);
 
       const addHistoryEntry = () => {
         const historyEntry = {
           baseCurrency,
           targetCurrency,
           baseAmount: baseCurrencyAmount,
-          targetAmount: baseCurrencyAmount * rate,
+          targetAmount: targetCurrencyAmount,
           date: new Date().toLocaleString(),
         };
 
@@ -87,6 +89,21 @@ const CurrencyConverter: React.FC = () => {
       };
 
       addHistoryEntry();
+
+      if (navigator.serviceWorker.controller) {
+        console.log('Sending message to service worker:', { baseCurrency, targetCurrency, baseCurrencyAmount, targetCurrencyAmount });
+        const notification: ConversionNotification = new ConversionNotification({
+          baseCurrency,
+          targetCurrency,
+          baseCurrencyAmount,
+          targetCurrencyAmount,
+        });
+
+        navigator.serviceWorker.controller.postMessage({
+          type: notification.type,
+          data: notification.data,
+        });
+      }
     });
   }, [baseCurrency, baseCurrencyAmount, targetCurrency, exchangeRateApiService, setHistory]);
 

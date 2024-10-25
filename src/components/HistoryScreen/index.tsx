@@ -1,6 +1,8 @@
 import React from 'react';
+import { Currency } from '@common/api/exchange-rate-api.types';
+import { ExchangeRateNotification } from '@common/notifications';
 import NavigationButton from '@components/buttons/NavigationButton';
-import { Box, List, ListItem, ListItemText, Paper, Typography } from '@mui/material';
+import { Box, Button, List, ListItem, ListItemText, Paper, Typography } from '@mui/material';
 import { ROUTES } from 'src';
 import { HistoryEntry, useHistoryContext } from 'src/context/HistoryContext';
 
@@ -22,6 +24,12 @@ const styles = {
   listItem: {
     borderBottom: '1px solid #ddd',
     padding: '8px 16px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  notifyButton: {
+    marginLeft: 'auto',
   },
   navigationButton: {
     display: 'block',
@@ -36,18 +44,36 @@ const styles = {
 
 interface HistoryListProps {
   history: HistoryEntry[];
-  styles: object;
+  styles: typeof styles;
 }
 
 const HistoryList: React.FC<HistoryListProps> = ({ history, styles }) => {
+  const handleNotify = (baseCurrency: Currency, targetCurrency: Currency) => {
+    if (navigator.serviceWorker.controller) {
+      console.log('Sending message to service worker:', { baseCurrency, targetCurrency });
+
+      const notification: ExchangeRateNotification = new ExchangeRateNotification({ baseCurrency, targetCurrency });
+
+      navigator.serviceWorker.controller.postMessage({
+        type: notification.type,
+        data: notification.data,
+      });
+    } else {
+      console.error('Service worker controller not found.');
+    }
+  };
+
   return (
     <List>
       {history.map((entry, index) => (
-        <ListItem key={index} sx={styles}>
+        <ListItem key={index} sx={styles.listItem}>
           <ListItemText
             primary={`${entry.baseAmount.toFixed(2)} ${entry.baseCurrency} = ${entry.targetAmount.toFixed(2)} ${entry.targetCurrency}`}
             secondary={entry.date}
           />
+          <Button variant="contained" color="primary" onClick={() => handleNotify(entry.baseCurrency, entry.targetCurrency)} sx={styles.notifyButton}>
+            Notify
+          </Button>
         </ListItem>
       ))}
     </List>
@@ -55,12 +81,12 @@ const HistoryList: React.FC<HistoryListProps> = ({ history, styles }) => {
 };
 
 interface NoEntriesMessageProps {
-  styles: object;
+  styles: typeof styles;
 }
 
 const NoEntriesMessage: React.FC<NoEntriesMessageProps> = ({ styles }) => {
   return (
-    <Typography variant="body1" sx={styles}>
+    <Typography variant="body1" sx={styles.noEntries}>
       No conversion history available.
     </Typography>
   );
@@ -77,7 +103,7 @@ const HistoryScreen: React.FC = () => {
       <NavigationButton sx={styles.navigationButton} destination={ROUTES.CurrencyConverterView} textToDisplay="Converter" />
 
       <Paper elevation={3} sx={styles.paper}>
-        {history.length === 0 ? <NoEntriesMessage styles={styles.noEntries} /> : <HistoryList history={history} styles={styles.listItem} />}
+        {history.length === 0 ? <NoEntriesMessage styles={styles} /> : <HistoryList history={history} styles={styles} />}
       </Paper>
     </Box>
   );
