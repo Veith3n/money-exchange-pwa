@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
 import CurrencyConverter from '@components/CurrencyConverter';
 import HistoryScreen from '@components/HistoryScreen';
+import NetworkStatus from '@components/NetworkStatus';
 import Settings from '@components/Settings';
 import { HistoryProvider } from '@context/HistoryContext';
 import { CustomThemeProvider } from '@context/ThemeContext';
@@ -22,6 +23,7 @@ export enum ROUTES {
 const App = () => {
   return (
     <HistoryProvider>
+      <NetworkStatus />
       <Routes>
         <Route path="*" element={<Navigate to={ROUTES.CurrencyConverterView} />} />
 
