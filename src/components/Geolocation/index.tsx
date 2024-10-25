@@ -35,48 +35,50 @@ const Geolocation: React.FC = () => {
         Geolocation Example
       </Typography>
       {!isGeolocationAvailable ? (
-        <Typography variant="body1" sx={styles.errorText}>
-          Your browser does not support Geolocation
-        </Typography>
+        <GeolocationError message="Your browser does not support Geolocation" />
       ) : !isGeolocationEnabled ? (
-        <Typography variant="body1" sx={styles.errorText}>
-          Geolocation is not enabled
-        </Typography>
+        <GeolocationError message="Geolocation is not enabled" />
       ) : coords ? (
-        <Table>
-          <TableBody>
-            <TableRow>
-              <TableCell>Latitude</TableCell>
-              <TableCell>{coords.latitude}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Longitude</TableCell>
-              <TableCell>{coords.longitude}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Altitude</TableCell>
-              <TableCell>{coords.altitude}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Heading</TableCell>
-              <TableCell>{coords.heading}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Speed</TableCell>
-              <TableCell>{coords.speed}</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+        <GeolocationTable coords={coords} />
       ) : (
-        <Box sx={styles.loadingBox}>
-          <CircularProgress />
-          <Typography variant="body1" sx={styles.loadingText}>
-            Getting the location data…
-          </Typography>
-        </Box>
+        <GeolocationLoading />
       )}
     </Box>
   );
 };
+
+const GeolocationError: React.FC<{ message: string }> = ({ message }) => (
+  <Typography variant="body1" sx={styles.errorText}>
+    {message}
+  </Typography>
+);
+
+const GeolocationTableEntry: React.FC<{ label: string; value: number | null }> = ({ label, value }) => (
+  <TableRow>
+    <TableCell>{label}</TableCell>
+    <TableCell>{value || 'N/A'}</TableCell>
+  </TableRow>
+);
+
+const GeolocationTable: React.FC<{ coords: GeolocationCoordinates }> = ({ coords }) => (
+  <Table>
+    <TableBody>
+      <GeolocationTableEntry label="Latitude" value={coords.latitude} />
+      <GeolocationTableEntry label="Longitude" value={coords.longitude} />
+      <GeolocationTableEntry label="Altitude" value={coords.altitude} />
+      <GeolocationTableEntry label="Heading" value={coords.heading} />
+      <GeolocationTableEntry label="Speed" value={coords.speed} />
+    </TableBody>
+  </Table>
+);
+
+const GeolocationLoading: React.FC = () => (
+  <Box sx={styles.loadingBox}>
+    <CircularProgress />
+    <Typography variant="body1" sx={styles.loadingText}>
+      Getting the location data…
+    </Typography>
+  </Box>
+);
 
 export default Geolocation;
