@@ -152,6 +152,11 @@ registerRoute(
   }),
 );
 
+// Immediately activate the new service worker
+self.addEventListener('install', function () {
+  self.skipWaiting();
+});
+
 // Delete old caches during the activate event
 self.addEventListener('activate', (event) => {
   event.waitUntil(
