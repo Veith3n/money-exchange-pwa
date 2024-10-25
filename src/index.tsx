@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
 import CurrencyConverter from '@components/CurrencyConverter';
+import Geolocation from '@components/Geolocation';
 import HistoryScreen from '@components/HistoryScreen';
 import NetworkStatus from '@components/NetworkStatus';
 import Settings from '@components/Settings';
@@ -19,6 +20,7 @@ export enum ROUTES {
   CurrencyConverterView = '/',
   ConversionHistoryView = '/history',
   SettingsView = '/settings',
+  GeolocationView = '/geolocation',
 }
 const App = () => {
   return (
@@ -30,6 +32,7 @@ const App = () => {
         <Route path={ROUTES.CurrencyConverterView} element={<CurrencyConverter />} />
         <Route path={ROUTES.ConversionHistoryView} element={<HistoryScreen />} />
         <Route path={ROUTES.SettingsView} element={<Settings />} />
+        <Route path={ROUTES.GeolocationView} element={<Geolocation />} />
       </Routes>
     </HistoryProvider>
   );
