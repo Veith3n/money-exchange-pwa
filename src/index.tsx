@@ -5,6 +5,7 @@ import CurrencyConverter from '@components/CurrencyConverter';
 import Geolocation from '@components/Geolocation';
 import HistoryScreen from '@components/HistoryScreen';
 import NetworkStatus from '@components/NetworkStatus';
+import NotificationPermission from '@components/NotificationPermission';
 import Settings from '@components/Settings';
 import { HistoryProvider } from '@context/HistoryContext';
 import { CustomThemeProvider } from '@context/ThemeContext';
@@ -25,6 +26,7 @@ export enum ROUTES {
 const App = () => {
   return (
     <HistoryProvider>
+      <NotificationPermission />
       <NetworkStatus />
       <Routes>
         <Route path="*" element={<Navigate to={ROUTES.CurrencyConverterView} />} />
