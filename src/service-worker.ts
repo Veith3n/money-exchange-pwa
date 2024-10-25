@@ -8,13 +8,17 @@
 // You can also remove this file if you'd prefer not to use a
 // service worker, and the Workbox build step will be skipped.
 
+import ExchangeRateApiService from '@common/api/exchange-rate-api.service';
 import { clientsClaim } from 'workbox-core';
 import { ExpirationPlugin } from 'workbox-expiration';
 import { createHandlerBoundToURL, precacheAndRoute } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
-import { StaleWhileRevalidate } from 'workbox-strategies';
+import { NetworkFirst, StaleWhileRevalidate } from 'workbox-strategies';
 
 declare const self: ServiceWorkerGlobalScope;
+
+const twoDaysInSeconds = 2 * 24 * 60 * 60;
+const EXCHANGE_RATE_API_CACHE = 'exchange-rate-api-cache-v1';
 
 clientsClaim();
 
@@ -78,3 +82,12 @@ self.addEventListener('message', (event) => {
 });
 
 // Any other custom service worker logic can go here.
+
+// Cache the exchange rate API responses
+registerRoute(
+  ({ url }) => url.href.startsWith(ExchangeRateApiService.BASE_URL),
+  new NetworkFirst({
+    cacheName: EXCHANGE_RATE_API_CACHE,
+    plugins: [new ExpirationPlugin({ maxEntries: 70, maxAgeSeconds: twoDaysInSeconds })],
+  }),
+);
